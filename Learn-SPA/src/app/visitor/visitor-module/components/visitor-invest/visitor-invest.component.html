@@ -1,0 +1,153 @@
+<section class="invest">
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-6 order-2 order-lg-1">
+            <h3 class="join-early col-lg-10">Be among the early investors while you still can!</h3>
+            <img class="mr-auto ml-auto width-100" src="assets/images/home/seed.svg"/>
+         </div>
+         <div class="col-lg-6 order-1 order-lg-2">
+            <!--<h1>Learning is a journey.<br />We go with you all the way.</h1>
+            <p class="col-lg-6 mr-auto ml-auto">Accave brings all the strengths of brick and mortar schools and merges it with the benefits of an online platform</p>-->
+            <form class="invest-form" (ngSubmit)="save()">
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0 p-b-10">
+                     <p class="sub-title">Interested in investing?</p>
+                     <h3>Register today</h3>
+                  </div>
+               </div>
+
+               <div class="col-12">
+                  <div class="countdown mycountup">
+                     <div class="measurements Days">
+                         <p class="measurements-number">{{DaysPast}}</p>
+                         <span class="divider">  </span>
+                         <p class="measurements-text">Days</p>
+                     </div>
+                     <div class="measurements Hours ">
+                         <p class="measurements-number">{{HoursPast}}</p>
+                         <span class="divider">  </span>
+                         <p class="measurements-text">Hours</p>
+                     </div>
+                     <div class="measurements Minutes">
+                         <p class="measurements-number">{{MinutesPast}}</p>
+                         <span class="divider">  </span>
+                         <p class="measurements-text">Minutes</p>
+                     </div>
+                     <div class="measurements   Seconds">
+                         <p class="measurements-number">{{SecondsPast}}</p>
+                         <p class="measurements-text">Seconds</p>
+                     </div>
+                 </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0">
+                     <h4 class="form-label">First Name</h4>
+                  </div>
+                  <div class="form-group display-flex p-lr-15">
+                     <div class="flex-grow-100">
+                        <input type="text" name='first_name' class="form-control big-input flex-grow-100" [(ngModel)]="Investor.firstName"
+                        required [ngClass]="{'input-validation-error': fieldErrors.FirstName}" />
+                        <span *ngIf="fieldErrors.FirstName" class="field-validation-error white-space-pre">{{fieldErrors.FirstName}}</span>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0">
+                        <h4 class="form-label">Last Name</h4>
+                  </div>
+                  <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100">
+                           <input type="text" name='last_name' class="form-control big-input flex-grow-100" [(ngModel)]="Investor.lastName"
+                           required [ngClass]="{'input-validation-error': fieldErrors.LastName}" />
+                           <span *ngIf="fieldErrors.LastName" class="field-validation-error white-space-pre">{{fieldErrors.LastName}}</span>
+                        </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0">
+                        <h4 class="form-label">Email</h4>
+                  </div>
+                  <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100">
+                           <input type="email" name='email' class="form-control big-input flex-grow-100" [(ngModel)]="Investor.email"
+                           required [ngClass]="{'input-validation-error': fieldErrors.Email}" />
+                           <span *ngIf="fieldErrors.Email" class="field-validation-error white-space-pre">{{fieldErrors.Email}}</span>
+                        </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0">
+                        <h4 class="form-label">Phone</h4>
+                  </div>
+                  <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100">
+                           <input type="text" required ng2TelInput class="form-control"
+                                        [ng2TelInputOptions]="{initialCountry: 'ng', utilsScript: 'node_modules/intl-tel-input/build/js/utils.js', preferredCountries: ['ng', 'us', 'gb']}"
+                                        [(ngModel)]="TempPhone" name="phone" (ng2TelOutput)="getNumber($event)" (input)="checkPhoneError()"
+                                        [ngClass]="{'input-validation-error': fieldErrors.PhoneNumber}"/>
+                           <span *ngIf="fieldErrors.PhoneNumber" class="field-validation-error white-space-pre">{{fieldErrors.PhoneNumber}}</span>
+                        </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0">
+                        <h4 class="form-label">Investment Range</h4>
+                  </div>
+                  <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100">
+                           <select class="form-control" name="investRange" [(ngModel)]="Investor.investmentRange" (change)="updateInvestmentRange()" 
+                           [ngClass]="{'input-validation-error': fieldErrors.InvestmentRange}" required>
+                              <option value="">----- Select a range -----</option>
+                              <option value="10000-25000">$10,000 - $25,000</option>
+                              <option value="25000-50000">$26,000 - $50,000</option>
+                              <option value="51000-100000">$51,000 - $100,000</option>
+                              <option value="101000-250000">$101,000 - $250,000</option>
+                              <option value="251000-500000">$251,000 - $500,000</option>
+                              <option value="501000-1000000">$501,000 - $1,000,000</option>
+                              <option value="2000000-1000000">$2,000,000 - $10,000,000</option>
+                           </select>
+                           <span *ngIf="fieldErrors.InvestmentRange" class="field-validation-error white-space-pre">{{fieldErrors.InvestmentRange}}</span>
+                        </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12">
+                  <div class="form-group p-lr-15 m-b-0 p-t-10">
+                     <button class="btn btn-purple width-100 font-16" type="submit">Register
+                        <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+                     </button>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</section>
+
+<ng-template #myModal>
+   <div class="myModalContainer">
+      <div class="modal-header no-border-bottom">
+         <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+            <i class="mdi mdi-close"></i>
+      </button>
+      </div>
+      <div class="modal-body">
+         <div class="col-12 text-center p-b-10">
+            <i class="fa fa-check-circle font-70 m-b-10 text-violet"></i>
+            <h3>Registration Successful</h3>
+            <div class="col-10 centered">
+               <p>An email has been sent to <span class="text-violet">{{InvesterEmailAddress}}</span>, please follow the instructions to confirm your email address</p>
+               <p class="m-b-10">Once your email is confirmed and your request is accepted, we will contact you. Thanks!!</p>
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer no-border-top no-border-bottom">
+         <button type="button" class="btn btn-purple" (click)="closeModal()">OK</button>
+      </div>
+   </div>
+</ng-template>

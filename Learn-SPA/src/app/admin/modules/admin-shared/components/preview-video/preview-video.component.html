@@ -1,0 +1,8 @@
+<div class="myModalContainer video-preview">
+  <div class="modal-body">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+        <i class="mdi mdi-close"></i>
+    </button>
+    <video [src]="this.Url" *ngIf="this.Url" controls></video>
+  </div>
+</div>

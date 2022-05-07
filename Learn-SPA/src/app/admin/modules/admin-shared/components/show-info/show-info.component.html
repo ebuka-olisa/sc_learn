@@ -1,0 +1,16 @@
+<div class="myModalContainer">
+  <div class="modal-header">
+      <h4 class="modal-title pull-left" [ngClass]="{'text-uppercase font-weight-600 letter-spacing-2': Visitor}">{{Title}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="dismiss()">
+        <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body row no-margin">
+    <div class="fa fa-{{Icon}} col-2 font-40 m-t-20 text-right" *ngIf="Icon"></div>
+    <p class="m-t-20 text-black" [ngClass]="{'col-10': Icon, 'col-md-12': !Icon, 'font-14': Visitor}" ngbAutofocus [innerHTML]="Message | safeHtml"></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-small btn-round no-m-r pull-right i-rounded i-bordered font-13 cursor-pointer no-m-t no-m-b" (click)="dismiss()">Ok</button>
+    <!--<button type="button" class="btn no-m-r pull-right i-rounded i-red i-bordered font-13 cursor-pointer" (click)="delete()">{{Action}}</button>-->
+  </div>
+</div>

@@ -1,0 +1,82 @@
+﻿/*===== Animate State Transitions =====*/
+[ui-view].ng-enter, [ui-view].ng-leave {
+    /*position: absolute;
+    left: 0;
+    right: 0;*/
+}
+.nestedState.ng-enter,.nestedState.ng-leave{
+    position: initial;
+    left: initial;
+    right: initial;
+}
+.ng-enter {
+    -o-transition: opacity .5s ease .2s;
+    -moz-transition: opacity .5s ease .2s;
+    -webkit-transition: opacity .5s ease .2s;
+    transition: opacity .5s ease .2s;
+    opacity: 0;
+}
+.ng-enter-active {
+    opacity: 1;
+}
+.ng-leave {
+    -o-transition: opacity .5s ease;
+    -moz-transition: opacity .5s ease;
+    -webkit-transition: opacity .5s ease;
+    transition:opacity .5s ease;
+    opacity: 0; /*1*/
+}
+.ng-leave-active{
+    display: none !important;
+}
+[ui-view].ng-leave-active {
+    display: block !important;
+    opacity: 0;
+}
+
+
+/*===== Animate ng-Show and ng-Hide =====*/
+/*ng-hide-add is when hiding the element*/
+.ng-hide-add, .ng-hide-remove{
+    /*position: absolute;
+    left: 0;
+    right: 0;*/
+}
+.remain.ng-hide-add, .remain2.ng-hide-remove{
+    position: initial;
+    left: initial;
+    right: initial;
+}
+.ng-hide-add {
+    -o-transition: opacity .5s ease;
+    -moz-transition: opacity .5s ease;
+    -webkit-transition: opacity .5s ease;
+    transition:opacity .5s ease;
+    opacity:1;
+}
+
+.ng-hide-remove {
+    -o-transition: opacity .5s ease .3s;
+    -moz-transition: opacity .5s ease .3s;
+    -webkit-transition: opacity .5s ease .3s;
+    transition:opacity .5s ease .3s;
+    opacity:0;
+}
+
+.ng-hide-add-active {
+    opacity:0;
+}
+
+.ng-hide-remove.ng-hide-remove-active {
+    opacity:1;
+}
+
+.no-animate.ng-hide-add, .no-animate.ng-hide-remove{
+    -o-transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+    transition: none;
+}
+   /* .no-animate.ng-hide-remove.ng-hide-remove-active {
+        opacity: 0;
+    }*/

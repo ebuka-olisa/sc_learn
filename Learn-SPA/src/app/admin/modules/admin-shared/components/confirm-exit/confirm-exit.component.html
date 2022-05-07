@@ -1,0 +1,15 @@
+<div class="myModalContainer">
+  <div class="modal-header">
+      <h4 class="modal-title pull-left">Confirm</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+        <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body">
+    <p class="col-md-12 m-t-20 text-black" ngbAutofocus >You have modified this item. You can discard your changes, or cancel to continue editing.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn no-m-r pull-right i-rounded i-bordered font-13 cursor-pointer" (click)="close()">Cancel</button>
+    <button type="button" class="btn no-m-r pull-right i-rounded i-red i-bordered font-13 cursor-pointer" (click)="discardChanges()">Discard Changes</button>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="tab-content-section overflow-auto">
+   <div class="overflow-auto">
+      <div class="col-md-12 m-t-30 m-b-30">
+         <div class="col-md-9">
+            <div class="col-md-12 no-p-l">
+               <h5 class="font-14">Name</h5>
+               <p class="text-muted m-b-20 font-16"><span class="font-14 opacity-7">{{showParent()}}</span>{{Path.name}}</p>
+            </div>
+
+            <div class="col-md-12 no-p-l">
+               <h5 class="font-14">Status</h5>
+               <p class="text-muted m-b-20 font-16">
+                  <span class="dot" [ngClass]="{'active': Path.isActive}"></span>
+                  {{Path.isActive == true ? 'Active' : 'Inactive'}}
+               </p>
+            </div>
+
+            <div class="col-md-12 no-p-l">
+               <h5 class="font-14">Description</h5>
+               <p class="text-muted m-b-20 font-16" [innerHTML]="Path.description | safeHtml"></p>
+            </div>
+         </div>
+         <div class="col-md-3">
+            <!--[routerLink]="['/scl-admin/subjects/', Subject.id]"-->
+            <a [routerLink]="['/scl-admin/learning-paths/', Path.id, 'edit']" class="btn no-m-r pull-right i-rounded btn-outline-violet font-14 cursor-pointer md-pull-left">
+               <i class="fa fa-pencil"></i>
+               Edit
+           </a>
+         </div>
+      </div>
+   </div>
+</div>
+<router-outlet></router-outlet>

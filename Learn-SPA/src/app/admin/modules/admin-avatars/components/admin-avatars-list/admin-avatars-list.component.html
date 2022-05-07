@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-xl-12">
+      <div class="card">
+          <div class="card-body no-p-lr">
+              <div class="card-body-lr-p">
+                  <!-- Filter & Search -->
+                  <div class="form-group col-md-8 col-12 no-p-l m-t-10 m-b-10 sm-no-p-r search-group">
+
+                      <!-- Search -->
+                      <input type="text" id="search" name="search" #searchText class="form-control noFilter" placeholder="Search" (input)="search(searchText.value)">
+                  
+                      <!-- Loading Animation -->
+                      <div [hidden]="!contentLoading" id="contentLoading">  
+                          <svg class="circular small" viewBox="25 25 50 50">
+                              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                          </svg>
+                      </div>
+                  </div>
+
+                  <!-- Create -->
+                  <div class="text-right col-md-4 col-12 m-t-10 no-p-l sm-m-b-10 sm-no-m-t">
+                      <a [routerLink]="['/scl-admin/avatars/add']" class="btn no-m-r pull-right i-rounded i-violet font-14 cursor-pointer md-pull-left">
+                          <i class="fa fa-plus"></i>
+                          New
+                      </a>
+                  </div>
+              </div>
+
+              <!-- List of avatars -->
+              <p class="col-md-12 font-13 card-body-lr-p" *ngIf="pagination.totalCount > 0">
+                  Showing
+                  <span class="font-weight-400">
+                      {{pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)}}
+                      <span *ngIf="(pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)) != pagination.totalCount">
+                          -
+                          <span *ngIf="pagination.currentPage * pagination.itemsPerPage < pagination.totalCount">{{pagination.currentPage * pagination.itemsPerPage}}</span>
+                          <span *ngIf="pagination.currentPage * pagination.itemsPerPage >= pagination.totalCount">{{pagination.totalCount}}</span>
+                      </span>
+                  </span>
+                  of <span>{{pagination.totalCount}}</span>
+              </p>
+              <div class="table-responsive col-md-12 no-p-lr">
+                  <table class="table shop-cart info-table tab-table table-hover">
+                      <thead>
+                          <tr class="sortable">
+                              <th class="text-left font-weight-500 text-small no-border-top" style="width: 100px">
+                              </th>
+                              <th class="text-left font-weight-500 text-small no-border-top">
+                                  Name
+                              </th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let Avatar of Avatars" [routerLink]="['/scl-admin/avatars/', Avatar.id]" class="cursor-pointer">
+                              <td>
+                                  <img [src]="Avatar.photo.url" />
+                              </td>
+                              <td>{{Avatar.name}}</td>
+                          </tr>
+                          <tr *ngIf="Avatars.length == 0 && !contentLoading"><td colspan="2" class="no-hover">No results found</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+              <p class="col-md-12 font-13 m-b-10 card-body-lr-p" *ngIf="pagination.totalCount > 0">
+                  Showing
+                  <span class="font-weight-400">
+                      {{pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)}}
+                      <span *ngIf="(pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)) != pagination.totalCount">
+                          -
+                          <span *ngIf="pagination.currentPage * pagination.itemsPerPage < pagination.totalCount">{{pagination.currentPage * pagination.itemsPerPage}}</span>
+                          <span *ngIf="pagination.currentPage * pagination.itemsPerPage >= pagination.totalCount">{{pagination.totalCount}}</span>
+                      </span>
+                  </span>
+                  of <span>{{pagination.totalCount}}</span>
+              </p>
+
+              <!-- Pagination Control -->
+              <div class="col-xl-12 card-body-lr-p" *ngIf="pagination.totalCount > pagination.itemsPerPage">
+                  <app-my-pagination [pagination]="pagination" (pageChanged)='pageChanged($event)'></app-my-pagination>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

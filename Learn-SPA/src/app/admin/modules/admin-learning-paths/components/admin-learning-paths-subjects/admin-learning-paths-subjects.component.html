@@ -1,0 +1,159 @@
+<div class="tab-content-section">
+   <div class="col-md-12 m-t-20 m-b-30 no-p-lr">
+      <div class="card-body-lr-p" [ngClass]="{'m-b-10': !filtered}">
+         <!-- Filter & Search -->
+         <div class="form-group col-md-8 col-12 no-p-l m-t-10 m-b-10 sm-no-p-r search-group">
+            <!-- Filter-->
+            <div dropdown [insideClick]="true" #filterDropdown="bs-dropdown" class="display-inline-block" id="dropdown-holder" (onShown)="handleFilterOpen()">
+               <button class="btn btn-outline-violet no-m-r my-dropdown-toggle" dropdownToggle id="dropdown-filter-button"
+                     aria-controls="dropdown-filter-content" type="button">
+                     <i class="mdi" [ngClass]="{'mdi-filter': filtered, 'mdi-filter-outline': !filtered}"></i>Filter
+               </button>
+               <div class="dropdown-menu dropdown-menu-left scale-up" id="dropdown-filter-content" role="menu" *dropdownMenu aria-labelledby="dropdown-filter-button">
+                     <div class="m-b-15">
+                        <p class="m-b-5 font-weight-400 font-14">Status</p>
+                        <div class="form-check no-p-l">
+                           <label class="custom-control custom-radio">
+                                 <input name="type" type="radio" class="custom-control-input" value="Active" [(ngModel)]="Filter.status" />
+                                 <span class="custom-control-indicator"></span>
+                                 <span class="custom-control-description">Active</span>
+                           </label>
+                           <label class="custom-control custom-radio">
+                                 <input name="type" type="radio" class="custom-control-input" value="Inactive" [(ngModel)]="Filter.status" />
+                                 <span class="custom-control-indicator"></span>
+                                 <span class="custom-control-description">Inactive</span>
+                           </label>
+                        </div>
+                     </div>
+                     <div class="divider dropdown-divider m-t-15 m-b-15"></div>
+                     <div>
+                        <button class="btn btn-default btn-sm i-rounded i-bordered" (click)="clearFilter(); filterDropdown.hide()">Reset</button>
+                        <button class="btn btn-default btn-sm pull-right i-rounded i-violet no-m-r" (click)="filter(); filterDropdown.hide()">Filter</button>
+                     </div>
+               </div>
+            </div>
+
+            <!-- Search -->
+            <input type="text" id="search" name="search" #searchText class="form-control" placeholder="Search" (input)="search(searchText.value)">
+         
+            <!-- Loading Animation -->
+            <div [hidden]="!contentLoading" id="contentLoading">  
+               <svg class="circular small" viewBox="25 25 50 50">
+                     <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+               </svg>
+            </div>
+         </div>
+
+         <!-- Action Buttons -->
+         <div class="text-right col-md-4 col-12 m-t-10 no-p-l sm-m-b-10 sm-no-m-t">
+            <a (click)="showAddSubjectModal()" class="btn no-m-r pull-right i-rounded i-violet font-14 cursor-pointer md-pull-left icon-only"
+            ngbTooltip="Add New Subject" placement="bottom">
+               <i class="fa fa-plus no-m-r"></i>
+            </a>
+            <button (click)="activateSelected()" ngbTooltip="Activate" placement="bottom" [disabled]="SelectedSubjects.length == 0"
+               class="btn m-r-5 pull-right i-rounded i-green font-14 cursor-pointer md-pull-left icon-only i-grey-disabled">
+               <i class="fa fa-check no-m-r"></i>
+            </button>
+            <button (click)="deactivateSelected()" ngbTooltip="Deactivate" placement="bottom" [disabled]="SelectedSubjects.length == 0"
+               class="btn m-r-5 pull-right i-rounded i-red font-14 cursor-pointer md-pull-left icon-only i-grey-disabled">
+               <i class="fa fa-ban no-m-r"></i>
+            </button>
+         </div>
+      </div>
+
+      <p class="no-m-top col-md-12 card-body-lr-p m-b-20 m-l-5" *ngIf="filtered">
+         <span class="filterCriteria" *ngFor="let item of FilteredElements">
+            <span class="text-capitalize">{{item.key}}</span>: <span class="font-weight-500">{{item.value}}</span>
+            <i class="mdi mdi-close p-l-5" (click)="removeFilter(item.key, item.index)"></i>
+         </span>
+      </p>
+
+     <!-- List of Learning Path Subjects -->
+      <p class="col-md-12 font-13 card-body-lr-p m-t-10 m-b-10" *ngIf="pagination.totalCount > 0">
+         Showing
+         <span class="font-weight-400">
+            {{pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)}}
+            <span *ngIf="(pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)) != pagination.totalCount">
+               -
+               <span *ngIf="pagination.currentPage * pagination.itemsPerPage < pagination.totalCount">{{pagination.currentPage * pagination.itemsPerPage}}</span>
+               <span *ngIf="pagination.currentPage * pagination.itemsPerPage >= pagination.totalCount">{{pagination.totalCount}}</span>
+            </span>
+         </span>
+         of <span>{{pagination.totalCount}}</span>
+      </p>
+      <div class="table-responsive col-md-12 overflow-visible">
+            <table class="table shop-cart tab-table info-table table-hover has-button has-checkbox">
+               <thead>
+                  <tr>
+                     <th class="no-border-top check-box-header"></th>
+                     <th class="text-left font-weight-500 text-small no-border-top">
+                        Name
+                     </th>
+                     <th class="text-left font-weight-500 text-small no-border-top">
+                        Status
+                     </th>
+                     <th class="no-border-top"></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <!-- [routerLink]="['/scl-admin/learning-paths/', Path.id]" -->
+                  <tr *ngFor="let Subject of PathSubjects" [ngClass]="{selected: isSubjectSelected(Subject.id)}"
+                     (mouseover)="Subject.showActions = true" (mouseout)="Subject.showActions = false">
+                        <td>
+                           <input type="checkbox" id=checkbox-subject-{{Subject.id}} class="filled-in chk-col-light-orange"
+                                (change)="toggleSubject(Subject)" [checked]="isSubjectSelected(Subject.id)" [disabled]="Subject.isParent">
+                           <label class="no-m-b" for="checkbox-subject-{{Subject.id}}"></label>
+                           <!--[ngClass]="{'opacity-0': !Subject.showActions && !isSubjectSelected(Subject.id)}"></label>-->
+                        </td>
+                        <td>{{Subject.name}} <span *ngIf="Subject.isParent" class="parent-marker" ngbTooltip="This subject is inherited from the parent path" placement="bottom">P</span></td>
+                        <td>
+                           <span class="dot" [ngClass]="{'active': Subject.isActive}"></span>
+                           <select class="font-weight-300" [(ngModel)]="Subject.isActive" (click)="$event.stopPropagation()" 
+                              (change)="updateSingleSubject(Subject)" *ngIf="!Subject.isParent">
+                              <option value="true">Active</option>
+                              <option value="false">Inactive</option>
+                           </select>
+                           <span *ngIf="Subject.isParent" class="m-l-5">{{Subject.isActive ? 'Active': 'Inactive'}}</span>
+                        </td>
+                        <td style="position: relative;">
+                           <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right"
+                           [ngClass]="{'opacity-0': !Subject.showActions && !Subject.holdButtonAppearance}" [isDisabled]="Subject.isParent"> <!--container="body"  >-->
+                              <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                                 ngbTooltip="Actions" placement="bottom" dropdownToggle id="dropdown-actions-button"
+                                 (click)="toggleButtonAppearance(Subject)" [ngClass]="{'hold': Subject.holdButtonAppearance}">
+                                 <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu>
+                                 <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" [routerLink]="['/scl-admin/learning-paths/', Path.id, 'subjects', Subject.id, 'topics']" type="button">
+                                    <i class="mdi mdi-eye font-16"></i>View Topics
+                                 </button>
+                                 <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="removeSubject(Subject)" type="button">
+                                    <i class="mdi mdi-close text-error font-16"></i>Remove Subject
+                                 </button>
+                              </div>
+                          </div>
+                        </td>
+                  </tr>
+                  <tr *ngIf="PathSubjects.length == 0 && !contentLoading"><td colspan="4" class="no-hover">No results found</td></tr>
+               </tbody>
+            </table>
+      </div>
+      <p class="col-md-12 font-13 m-b-10 card-body-lr-p" *ngIf="pagination.totalCount > 0">
+         Showing
+         <span class="font-weight-400">
+             {{pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)}}
+             <span *ngIf="(pagination.currentPage * pagination.itemsPerPage - (pagination.itemsPerPage - 1)) != pagination.totalCount">
+                 -
+                 <span *ngIf="pagination.currentPage * pagination.itemsPerPage < pagination.totalCount">{{pagination.currentPage * pagination.itemsPerPage}}</span>
+                 <span *ngIf="pagination.currentPage * pagination.itemsPerPage >= pagination.totalCount">{{pagination.totalCount}}</span>
+             </span>
+         </span>
+         of <span>{{pagination.totalCount}}</span>
+      </p>
+
+      <!-- Pagination Control -->
+      <div class="col-xl-12 card-body-lr-p" *ngIf="pagination.totalCount > pagination.itemsPerPage">
+         <app-my-pagination [pagination]="pagination" (pageChanged)='pageChanged($event)'></app-my-pagination>
+      </div>
+   </div>
+</div>

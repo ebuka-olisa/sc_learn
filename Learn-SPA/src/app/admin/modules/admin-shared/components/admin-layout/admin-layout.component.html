@@ -1,0 +1,172 @@
+<div id="main-wrapper" class="fix-header fix-sidebar"> 
+  <!-- Topbar header -->
+  <header class="topbar">
+     <nav class="navbar top-navbar navbar-expand-md navbar-light">
+         <div class="navbar-header">
+             <a class="navbar-brand" ui_sref="home">
+                 <!-- Logo icon -->
+                 <b>
+                     <img src="assets/images/logo/logo.svg" alt="homepage">
+                 </b>
+                 <!--End Logo icon -->
+                 <!-- Logo text -->
+                 <span>
+                     <!-- Light Logo text -->
+                     <img src="assets/images/logo/name.svg" alt="homepage">
+                 </span>
+             </a>
+         </div>
+
+         <div class="navbar-collapse">
+             <!-- ============================================================== -->
+             <!-- Toggle and nav items -->
+             <!-- ============================================================== -->
+             <ul class="navbar-nav m-r-auto mt-md-0">
+                 <!-- Toggle -->
+                <li class="nav-item" (click)="toggleHiddenSidebar()"> 
+                  <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi-close mdi-menu mdi"></i></a> 
+                </li>
+                <li class="nav-item m-l-10" (click)="toggleSidebar()"> 
+                  <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a>
+                </li>
+             </ul>
+
+             <!-- ============================================================== -->
+             <!-- User profile and notifications -->
+             <!-- ============================================================== -->
+             <ul class="navbar-nav my-lg-0">
+                 <li class="nav-item dropdown" dropdown>
+                   <button class="nav-link dropdown-toggle text-muted waves-effect waves-dark profile-pic-button" type="button"
+                       dropdownToggle id="dropdown-user-content-link" aria-controls="dropdown-user-content">
+                       <img *ngIf="getUserProfileImage()" [src]="getUserProfileImage()" alt="profile" class="profile-pic">
+                       <img *ngIf="!getUserProfileImage()" src="assets/images/unknown.jpg" alt="profile" class="profile-pic">
+                       <i class="fa fa-chevron-down profile-pic-icon"></i>
+                   </button>
+                   <div class="dropdown-menu dropdown-menu-right scale-up" id="dropdown-user-content" 
+                       role="menu" *dropdownMenu aria-labelledby="dropdown-user-content-link">
+                       <ul class="dropdown-user">
+                           <li>
+                               <div class="dw-user-box">
+                                   <div class="u-img">
+                                        <img *ngIf="getUserProfileImage()" [src]="getUserProfileImage()" alt="profile">
+                                        <img *ngIf="!getUserProfileImage()" src="assets/images/unknown.jpg" alt="profile">
+                                    </div>
+                                   <div class="u-text">
+                                       <h4>{{admin?.fullName}}</h4>
+                                       <p class="text-muted">{{admin?.email}}</p>
+                                       <h4 class="role">{{admin?.role == 'Admin' ? 'Administrator' : admin?.role}}</h4>
+                                   </div>
+                               </div>
+                           </li>
+                           <li role="separator" class="divider"></li>
+                           <li><a href="/scl-admin/profile" target="_self"><i class="ti-user"></i> My Profile</a></li>
+                           <li role="separator" class="divider"></li>
+                           <li>
+                               <a (click)="logOut()" class="cursor-pointer"><i class="fa fa-power-off"></i>Log Out</a>
+                           </li>
+                       </ul>
+                   </div>
+               </li>
+             </ul>
+         </div>
+     </nav>
+   </header>
+
+   
+   <!-- Left side bar -->
+   <aside class="left-sidebar">
+       <!-- Sidebar scroll-->
+       <div class="scroll-sidebar">
+           <!-- Sidebar navigation-->
+           <nav class="sidebar-nav">
+               <ul id="sidebarnav">
+                   <!--<li class="nav-devider"></li>-->
+                    <li class="nav-small-cap">NAVIGATION</li>
+                    <li [ngClass]="{'active': ActivePage == 'dashboard' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin" target="_self" aria-expanded="false">
+                            <i class="mdi mdi-gauge"></i>
+                            <span class="hide-menu">Dashboard</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{'active': ActivePage == 'subjects' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin/subjects" aria-expanded="false">
+                            <i class="mdi mdi-book-open-page-variant"></i>
+                            <span class="hide-menu">Subjects</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{'active': ActivePage == 'learning paths' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin/learning-paths" aria-expanded="false">
+                            <i class="mdi mdi-routes"></i>
+                            <span class="hide-menu">Learning Paths</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{'active': ActivePage == 'avatars' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin/avatars" aria-expanded="false">
+                            <i class="mdi mdi-emoticon-tongue"></i>
+                            <span class="hide-menu">Avatars</span>
+                        </a>
+                    </li>
+                    <!--<li [ngClass]="{'active': ActivePage == 'clients' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin/clients" aria-expanded="false">
+                            <i class="mdi mdi-account"></i>
+                            <span class="hide-menu">Clients</span>
+                        </a>
+                    </li>
+                    <li [ngClass]="{'active': ActivePage == 'products' || ActivePage == 'product_categories' 
+                        || ActivePage == 'product_extra_attributes' || ActivePage == 'product_measurement_metrics'}">
+                        <a class="has-arrow waves-effect waves-dark" (click)="isProductMenuCollapsed = !isProductMenuCollapsed"
+                        [attr.aria-expanded]="!isProductMenuCollapsed" aria-controls="collapseProductMenu">
+                            <i class="mdi mdi-tag-multiple"></i>
+                            <span class="hide-menu">Products</span>
+                        </a>
+                        <ul id="collapseProductMenu" class="collapse" [ngbCollapse]="isProductMenuCollapsed">
+                            <li><a routerLink="/scl-admin/products" [ngClass]="{'active': ActivePage == 'products'}">Products</a></li>
+                            <li><a routerLink="/scl-admin/products/categories" [ngClass]="{'active': ActivePage == 'product_categories'}">Categories</a></li>
+                            <li><a routerLink="/scl-admin/products/extra_attributes" [ngClass]="{'active': ActivePage == 'product_extra_attributes'}">Extra Attributes</a></li>
+                            <li><a routerLink="/scl-admin/products/measurement_metrics" [ngClass]="{'active': ActivePage == 'product_measurement_metrics'}">Measurement Metrics</a></li>
+                        </ul>
+                    </li> 
+                    <li [ngClass]="{'active': ActivePage == 'vendors' }">
+                        <a class="waves-effect waves-dark" routerLink="/scl-admin/vendors" aria-expanded="false">
+                            <i class="mdi mdi-store"></i>
+                            <span class="hide-menu">Vendors</span>
+                        </a>
+                    </li>-->
+               </ul>
+           </nav>
+       </div>
+   </aside>
+
+   <!-- Page wrapper -->
+   <div class="page-wrapper" appPageWrapper>
+       <!-- Breadcrumb-->
+       <div class="row page-titles">
+           <div class="col-md-12 page-titles-container">
+               <div class="col-sm-5 col-12 align-self-center">
+                   <h3 class="text-black"><span class="gray-text">{{PageHeadingPrefix}}</span>{{PageHeading}}</h3>
+                   <h6 class="text-black m-b-0">{{PageSubHeading}}</h6>
+                   <div *ngIf="ShowBackButton">
+                       <a class="m-t-10 back-button" routerLink="{{ParentUrl}}"><i class=" fa fa-chevron-left m-r-5"></i>BACK</a>
+                   </div>
+               </div>
+               <div class="col-sm-7 col-12 align-self-center">
+                    <div>
+                        <!--<pp-breadcrumbs></pp-breadcrumbs>-->
+                        <app-ng-dynamic-breadcrumb [lastLinkColor]="'#6c757d'" [symbol]="''"></app-ng-dynamic-breadcrumb>
+                        <ol class="breadcrumb"><li class="breadcrumb-item no-arrow"><a routerLink="/scl-admin">Home</a></ol>
+                    </div>
+               </div>
+           </div>
+       </div>
+
+       <!-- Container fluid -->
+       <div class="container-fluid"> <!-- [ngClass]="{'no-p-l wide-container-fluid sm-no-p-lr': hasLeftTab}">-->
+            <router-outlet (activate)="onActivate($event)"></router-outlet>
+       </div>
+
+       <!-- Footer -->
+       <footer class="footer">
+           © 2022 Accave. Powered by <a href="http://www.listacc.com" target="_blank">Listacc</a>
+       </footer>
+   </div>
+</div>

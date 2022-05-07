@@ -1,0 +1,21 @@
+<div class="row">
+   <div class="col-xl-12">
+      <div class="card">
+         <div class="card-body no-p-lr">
+            <div class="card-body-lr-p">
+               <div class="tab-content col-md-12 no-p-lr">
+                  <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs" >
+                     <li [ngbNavItem]="1">
+                        <a ngbNavLink [routerLink]="['/scl-admin/learning-paths/', Path.id]">Overview</a>
+                     </li>
+                     <li [ngbNavItem]="2">
+                        <a ngbNavLink  [routerLink]="['/scl-admin/learning-paths/', Path.id, 'subjects']">Subjects</a>
+                     </li>
+                  </ul>
+                  <router-outlet></router-outlet>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

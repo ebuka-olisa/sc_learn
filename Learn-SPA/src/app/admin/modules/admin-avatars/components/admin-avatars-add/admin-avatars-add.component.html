@@ -1,0 +1,70 @@
+<div class="myModalContainer" [ngClass]="{'has-loading': !editAvatarReady}">
+  <div class="modal-header" [hidden]="!editAvatarReady">
+      <h4 class="modal-title pull-left font-weight-300 font-16">{{initialState.title}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="close()" *ngIf="!processing">
+          <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body" [hidden]="!editAvatarReady">
+      <form #myForm="ngForm" (ngSubmit)="save()" class="form-horizontal" autocomplete="off">
+          <input autocomplete="off" name="hidden" type="text" style="display:none;">
+          <div class="col-md-12 p-t-5 p-b-5 button-region no-border-bottom">
+              <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right">
+                  <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                      *ngIf="editMode" [disabled]="processing || deleting" ngbTooltip="Actions" placement="top" container="body"
+                      dropdownToggle id="dropdown-actions-button" aria-controls="dropdown-actions-content">
+                      <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu aria-labelledby="dropdown-actions-button">
+                      <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="delete()" type="button">
+                          <i class="mdi mdi-close text-error font-16" *ngIf="!deleting"></i>Delete
+                      </button>
+                  </div>
+              </div>
+              <button type="submit" class="btn no-m-r pull-right i-rounded i-green i-grey-disabled font-13 cursor-pointer"
+                  [disabled]="processing || deleting || !myForm.form.valid || (editMode && !changesMade()) || !hasPicture()">
+                  <i class="fa fa-save"></i>
+                  Save
+                  <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+              </button>
+          </div>
+
+          <div class="modal-body-container col-md-12 no-p-lr">
+            
+                  <!-- Name -->
+                  <div class="col-md-12">
+                      <div class="form-group p-lr-15">
+                          <h3 class="box-title">Name</h3>
+                          <hr class="m-t-0 m-b-10">
+                      </div>
+                      <div class="form-group display-flex p-lr-15">
+                          <div class="flex-grow-100">
+                              <input type="text" name='name' class="form-control big-input flex-grow-100" [(ngModel)]="Avatar.name"
+                              required [ngClass]="{'input-validation-error': fieldErrors.Name}" />
+                              <span *ngIf="fieldErrors.Name" class="field-validation-error white-space-pre">{{fieldErrors.Name}}</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Picture -->
+                  <div class="col-md-12 m-t-5">
+                    <div class="form-group p-lr-15">
+                        <h3 class="box-title" ngbAutofocus>Picture</h3>
+                        <hr class="m-t-0 m-b-10">
+                        <h6 class="font-12 text-muted field-validation-error" *ngIf="fieldErrors.Picture">{{fieldErrors.Picture}}</h6>
+                    </div>
+                    <div class="form-group p-lr-15">
+                        <app-single-picture [config]="pictureConfig"></app-single-picture>
+                    </div>
+                </div>
+          </div>
+          
+      </form>
+  </div>
+
+  <div class="preloader position-absolute" [hidden]="editAvatarReady">
+      <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+      </svg>
+  </div>
+</div>

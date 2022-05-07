@@ -1,0 +1,50 @@
+<div class="myModalContainer" [ngClass]="{'has-loading': !subjectsReady}">
+    <div class="modal-header" [hidden]="!subjectsReady">
+        <h4 class="modal-title pull-left font-weight-300 font-16">Add Subjects</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="close()" *ngIf="!processing">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body" [hidden]="!subjectsReady">
+        <div class="col-md-12 p-t-5 p-b-5 button-region">
+            <div class="form-group display-flex no-m-b">
+                <div class="flex-grow-100">
+                    <input type="text" #mySearch name='search' placeholder="Search" class="form-control flex-grow-100 no-m-b" 
+                        [(ngModel)]="Search" (input)="filterItem(mySearch.value)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 modal-body-container">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="checkbox-group">
+                        <span *ngFor="let Subject of filteredItems">
+                            <input type="checkbox" id=checkbox-subject-{{Subject.id}} class="filled-in chk-col-light-orange"
+                                (change)="toggleSubject(Subject)" [checked]="isSubjectSelected(Subject.id)"
+                                [disabled]="processing">
+                                <!--[disabled]="Subject.candelete == false || Subject.isFromParent"/>-->
+                            <label class="font-16 m-b-10 p-l-35" for="checkbox-subject-{{Subject.id}}">{{Subject.name}}</label>
+                        </span>
+                        <span class="display-block m-t-10 m-b-10" *ngIf="filteredItems.length < 1">
+                            <p *ngIf="Subjects.length == 0">No subjects</p>
+                            <p *ngIf="Subjects.length > 0" class="m-b-5 text-center">No results</p>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" [hidden]="!subjectsReady">
+        <button type="button" class="btn no-m-r pull-right i-rounded i-bordered font-13 cursor-pointer i-grey-disabled" 
+            (click)="close()" [disabled]="processing">Cancel</button>
+        <button type="button" class="btn no-m-r pull-right i-rounded i-violet i-bordered font-13 cursor-pointer" 
+            (click)="save()" [disabled]="filteredItems.length < 1 || processing">Select
+            <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+        </button>
+    </div>
+    <div class="preloader position-absolute" [hidden]="subjectsReady">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+        </svg>
+    </div>
+</div>

@@ -1,0 +1,111 @@
+:host-context{
+    background: #dde4fe;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+}
+
+:host-context #main-wrapper {
+    margin: 5% auto;
+    position: relative;
+    max-width: 450px;
+}
+
+:host /deep/ .center{
+    margin-right: auto;
+    margin-left: auto;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+/*body {
+    background: #dadee2;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+}*/
+
+:host /deep/ section{
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+:host /deep/ .card{
+    border: 0px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+:host /deep/ .card-body{
+    padding: .65rem 1.3rem;
+    margin: .65rem;
+    border-radius: 4px;
+}
+:host /deep/ .sign-in h3{
+    background: #fff;
+    padding: 0 10px;
+    z-index: 2;
+    margin-top: 0;
+    font-weight: 500;
+}
+:host /deep/ .sign-in hr{
+    margin-top: -20px;
+    z-index: 1;
+    border-top-color: #e4e4e4;
+    box-sizing: border-box;
+}
+
+:host /deep/ input.form-control {
+    padding: 12px 15px 11px;
+    border: 1px solid rgba(0,0,0,.2);
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    border-radius: 20px;
+}
+:host /deep/ input.form-control.input-validation-error{
+    border: 1px solid #b94a48;
+}
+
+:host /deep/ .field-validation-error{
+    font-size: 11px;
+    margin-top: -3px;
+}
+
+:host /deep/ .btn_violet{
+    border-radius: 20px !important;
+}
+:host /deep/ .btn_violet:focus{
+    outline: none;
+}
+
+:host /deep/ .ex-page-content .btn_grey_blue{
+    color: #fff;
+}
+:host /deep/ .ex-page-content p{
+    color: #67757c !important;
+}
+
+
+:host /deep/ .logo b{
+    display: block;
+}
+:host /deep/ .logo b img{
+    height: 120px;
+    margin-bottom: 2px;
+}
+:host /deep/ .logo span img{
+    height: 40px;
+    width: auto;
+}

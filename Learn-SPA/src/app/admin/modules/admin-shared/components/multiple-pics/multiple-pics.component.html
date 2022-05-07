@@ -1,0 +1,3 @@
+<div class="dropzone multiple-pics" [ngClass]="cssClass" [dropzone]="dropzoneConfig" (addedFile)="fileAdded($event)"
+  (removedFile)="fileRemoved($event)" (error)="errorOccurred($event)"></div>
+<span *ngIf="Error" class="field-validation-error white-space-pre m-t-3 text-center">{{Error}}</span>

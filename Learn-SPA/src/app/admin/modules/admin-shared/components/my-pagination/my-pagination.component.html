@@ -1,0 +1,10 @@
+<ngb-pagination [collectionSize]="pagination.totalCount" [(page)]="pagination.currentPage" 
+    [pageSize]="pagination.itemsPerPage" [maxSize]="pagination.maxSize" [rotate]="pagination.rotate" [boundaryLinks]="true"
+    class="d-flex justify-content-end" (pageChange)="emitPageChanged($event)">
+    <ng-template ngbPaginationFirst>&laquo;</ng-template>
+    <ng-template ngbPaginationLast>&raquo;</ng-template>
+    <ng-template ngbPaginationPrevious>&lsaquo;</ng-template>
+    <ng-template ngbPaginationNext>&rsaquo;</ng-template>
+    <ng-template ngbPaginationEllipsis>...</ng-template>
+    <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+</ngb-pagination>

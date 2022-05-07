@@ -1,0 +1,151 @@
+<div class="myModalContainer" [ngClass]="{'has-loading': !descriptionTextAreaReady || !editSubjectReady}">
+    <div class="modal-header" [hidden]="!descriptionTextAreaReady || !editSubjectReady">
+        <h4 class="modal-title pull-left font-weight-300 font-16">{{initialState.title}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="close()" *ngIf="!processing">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body" [hidden]="!descriptionTextAreaReady || !editSubjectReady">
+        <form #myForm="ngForm" (ngSubmit)="save()" class="form-horizontal" autocomplete="off">
+            <input autocomplete="off" name="hidden" type="text" style="display:none;">
+            <div class="col-md-12 p-t-5 p-b-5 button-region no-border-bottom">
+                <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right">
+                    <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                        *ngIf="editMode" [disabled]="processing || deleting" ngbTooltip="Actions" placement="top" container="body"
+                        dropdownToggle id="dropdown-actions-button" aria-controls="dropdown-actions-content">
+                        <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu aria-labelledby="dropdown-actions-button">
+                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="delete()" type="button">
+                            <i class="mdi mdi-close text-error font-16" *ngIf="!deleting"></i>Delete
+                        </button>
+                    </div>
+                </div>
+                <button type="button" *ngIf="!editMode" (click)="goToNextTab()" [disabled]="activeTab == 1"
+                    class="btn no-m-r pull-right i-rounded i-black i-grey-disabled font-13 cursor-pointer m-l-5 icon-only">
+                    <i class="fa fa-chevron-right no-m-r"></i>
+                </button>
+                <button type="submit" class="btn no-m-r pull-right i-rounded i-green i-grey-disabled font-13 cursor-pointer"
+                    [disabled]="processing || deleting || !myForm.form.valid || !hasDescription() || (editMode && !changesMade()) || !hasPictures()">
+                    <i class="fa fa-save"></i>
+                    Save
+                    <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+                </button>
+                <button type="button" *ngIf="!editMode" (click)="goToPreviousTab()" [disabled]="activeTab == 0"
+                    class="btn pull-right i-rounded i-black i-grey-disabled font-13 cursor-pointer m-r-5 icon-only">
+                    <i class="fa fa-chevron-left no-m-r"></i>
+                </button>
+            </div>
+
+            <tabset #myTab>
+                <tab heading="Details" (selectTab)="tabSelelected(0)">
+                    <div class="modal-body-container modal-body-container2 col-12">
+                        <div class="col-md-12">
+                            <div class="form-group p-lr-15">
+                                <h3 class="box-title">Name</h3>
+                                <hr class="m-t-0 m-b-10">
+                            </div>
+                            <div class="form-group display-flex p-lr-15">
+                                <div class="flex-grow-100">
+                                    <input type="text" name='name' class="form-control big-input flex-grow-100" [(ngModel)]="Subject.name"
+                                    required [ngClass]="{'input-validation-error': fieldErrors.Name}" />
+                                    <span *ngIf="fieldErrors.Name" class="field-validation-error white-space-pre">{{fieldErrors.Name}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-6 no-p-l">
+                                <div class="form-group p-l-15">
+                                    <h3 class="box-title">Status</h3>
+                                    <hr class="m-t-0 m-b-10">
+                                </div>
+                                <div class="form-group display-flex p-l-15">
+                                    <div class="flex-grow-100">
+                                        <ng-selectize [config]="statusSelectizeConfig" [options]="StatusOptions" name="status" [(ngModel)]="Subject.isActive"
+                                        [ngClass]="{'input-validation-error': fieldErrors.IsActive}" class="small-selectize" required [enabled]="editMode"></ng-selectize>
+                                    <span *ngIf="fieldErrors.IsActive" class="field-validation-error white-space-pre">{{fieldErrors.IsActive}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 no-p-r">
+                                <div class="form-group p-r-15">
+                                    <h3 class="box-title">Color</h3>
+                                    <hr class="m-t-0 m-b-10">
+                                </div>
+                                <div class="form-group display-flex p-r-15">
+                                    <div class="flex-grow-100 color-picker" #colorPicker>
+                                        <color-chrome [color]="color" (onChange)="handleColorChange($event)" class="color-picker-modal" [hidden]="!isColorPickerVisible"></color-chrome>
+                                        <input type="text" name='colorCode' class="form-control big-input flex-grow-100 color-picker-hex" [(ngModel)]="Subject.colorCode"
+                                        required [ngClass]="{'input-validation-error': fieldErrors.ColorCode}" (click)="showColorPicker()" (keyup)="handleColorChangeFromInput()"/>
+                                        <span class="color-picker-preview" [style.background]='Subject.colorCode' (click)="toggleColorPicker()"></span>
+                                    <span *ngIf="fieldErrors.ColorCode" class="field-validation-error white-space-pre">{{fieldErrors.ColorCode}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group p-lr-15">
+                                <h3 class="box-title" ngbAutofocus>Description</h3>
+                                <hr class="m-t-0 m-b-10">
+                            </div>
+                            <div class="form-group p-l-15">
+                                <editor [init]="descriptionTextAreaConfig" (onInit)="descriptionReady()" name="description" 
+                                [(ngModel)]="Subject.description"[ngClass]="{'input-validation-error': fieldErrors.Description}"></editor>
+                                <span *ngIf="fieldErrors.Description" class="field-validation-error white-space-pre m-t-5">{{fieldErrors.Description}}</span>         
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Pictures" (selectTab)="tabSelelected(1)">
+                    <div class="modal-body-container modal-body-container2 col-12">
+                        <div class="col-md-12">
+                            <h6 class="font-12 text-muted p-lr-15 opacity-7">
+                               <i class="fa fa-info-circle m-r-5"></i>Select a color in the previous tab to see a preview of all pictures
+                            </h6> 
+                            <div class="col-lg-6 col-md-12 no-p-l">
+                                <div class="form-group p-l-15">
+                                    <h3 class="box-title" ngbAutofocus>Long</h3>
+                                    <hr class="m-t-0 m-b-10">
+                                    <h6 class="font-12 text-muted field-validation-error" *ngIf="fieldErrors.Picture">{{fieldErrors.Picture}}</h6>
+                                </div>
+                                <div class="form-group p-l-15">
+                                    <app-single-picture [config]="longPictureConfig" [imageBackgroundColor]="pictureColorConfig" #longPicture></app-single-picture>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12 no-p-r">
+                                <div class="form-group p-r-15">
+                                    <h3 class="box-title" ngbAutofocus>Short</h3>
+                                    <hr class="m-t-0 m-b-10">
+                                    <h6 class="font-12 text-muted field-validation-error" *ngIf="fieldErrors.Picture">{{fieldErrors.Picture}}</h6>
+                                </div>
+                                <div class="form-group p-r-15">
+                                    <app-single-picture [config]="shortPictureConfig" [imageBackgroundColor]="pictureColorConfig" #shortPicture></app-single-picture>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group p-lr-15">
+                                <h3 class="box-title" ngbAutofocus>Banner</h3>
+                                <hr class="m-t-0 m-b-10">
+                                <h6 class="font-12 text-muted field-validation-error" *ngIf="fieldErrors.Picture">{{fieldErrors.Picture}}</h6>
+                            </div>
+                            <div class="form-group p-lr-15">
+                                <app-single-picture [config]="bannerPictureConfig" [imageBackgroundColor]="pictureColorConfig" #bannerPicture></app-single-picture>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </form>
+    </div>
+
+    <div class="preloader position-absolute" [hidden]="descriptionTextAreaReady && editSubjectReady">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+        </svg>
+    </div>
+</div>

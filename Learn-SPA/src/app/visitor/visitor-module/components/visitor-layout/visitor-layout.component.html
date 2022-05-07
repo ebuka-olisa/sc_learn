@@ -1,0 +1,103 @@
+
+  <!-- ==============================================
+  NAVIGATION BAR
+  =============================================== -->
+<nav class="navbar navbar-fixed-top" role="navigation" (scroll)="onscroll()" [ngClass]="{'sticky': navbarFixed}">
+  <div class="container-fluid">
+      <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand logo" href="/">
+              <img src="assets/images/logo/logo.svg" title="Accave">
+              <span><img src="assets/images/logo/name.svg" title=""></span>
+          </a>
+      </div>
+
+      <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav sf-menu">
+            <li [ngClass]="{'active': ActivePage == 'invest' }"><a class="cl-effect" [routerLink]="['/invest']">Investment</a></li>
+              <!--<li [ngClass]="{'active': ActivePage == 'home' }"><a class="cl-effect" ui-sref="home">Home</a></li>-->
+              <!--<li id="product" ng-class="{'active': activePage == 'faq' || activePage == 'features' || activePage == 'what-is-school-cater' || activePage == 'pricing'}">
+                  <a class="cl-effect sf-with-ul" href="#">Product <i class="fa fa-chevron-down"></i></a>
+                  <ul>
+                      <li ng-class="{'active': activePage == 'what-is-school-cater'}"><a ui-sref="what-is-school-cater">What is School Cater?</a></li>
+                      <li ng-class="{'active': activePage == 'features'}"><a ui-sref="features">Features</a></li>
+                      <li ng-class="{'active': activePage == 'pricing'}"><a ui-sref="pricing">Pricing</a></li>
+                      <li ng-class="{'active': activePage == 'faq'}"><a class="last_a" ui-sref="faq">FAQ</a></li>
+                  </ul>
+              </li>-->
+              <!--<li [ngClass]="{'active': ActivePage == 'marketing'}"><a class="cl-effect" ui-sref="marketing">Marketing</a></li>
+              <li [ngClass]="{'active': ActivePage == 'contact'}"><a class="cl-effect" ui-sref="contact">Contact</a></li>-->
+          </ul>
+
+          <ul class="nav navbar-nav extra-nav">
+              <li class="app-store-nav-link">
+                <a class="cl-effect" href="account/register" target="_self">
+                  <img src="assets/images/icons/apple.svg"/>
+                  <span>
+                    <label>Available on the</label>
+                    <label class="store-name">App Store</label>
+                  </span>
+                </a>
+              </li>
+              <li class="app-store-nav-link"><li class="app-store-nav-link">
+                <a class="cl-effect" href="account/register" target="_self">
+                  <img src="assets/images/icons/play-store.svg"/>
+                  <span>
+                    <label>Get it on</label>
+                    <label class="store-name">Google Play</label>
+                  </span>
+                </a>
+              </li>
+          </ul>
+
+          <ul class="nav navbar-nav extra-nav">
+              <li class="subscribe-nav-link"><a class="cl-effect" href="account/register" target="_self">Subscribe</a></li>
+          </ul>
+      </div>
+  </div>
+</nav>
+
+<!-- Container fluid -->
+<!--<div class="container-fluid">-->
+  <router-outlet (activate)="onActivate($event)"></router-outlet>
+<!--</div>-->
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <p class="main col-12">Accave brings all the strengths of a brick and mortar school and merges it with the benefits of an online platform. It sums up into one brilliant suite that does its job of delivering knowledge magnificiently. Learning materials on Accave come in form of videos and text/notes to supplement them. Secondary school students at all levels in Nigeria and West Africa are catered for, as all contents are based on WAEC and JAMB syllabuses. Junior students are not left out; their entire syllabus is addressed too. It doesn’t end here. Learning on Accave is self-paced, but not without a mild and unintrusive hand to guide the student. Learners will be guided mainly through quizzes and challenges. </p>
+    </div>
+    <div class="row">
+      <div class="logo">
+        <img src="assets/images/logo/logo.svg"/>
+        <span><img src="assets/images/logo/name.svg"/></span>
+      </div>
+
+      <ul class="nav ml-auto">
+        <li class="app-store-nav-link">
+          <a class="cl-effect" href="account/register" target="_self">
+            <img src="assets/images/icons/apple.svg"/>
+            <span>
+              <label>Available on the</label>
+              <label class="store-name">App Store</label>
+            </span>
+          </a>
+        </li>
+        <li class="app-store-nav-link"><li class="app-store-nav-link">
+          <a class="cl-effect" href="account/register" target="_self">
+            <img src="assets/images/icons/play-store.svg"/>
+            <span>
+              <label>Get it on</label>
+              <label class="store-name">Google Play</label>
+            </span>
+          </a>
+        </li>
+    </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,270 @@
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body no-p-lr">
+                <div class="card-body-lr-p" [ngClass]="{'m-b-10': !filtered}">
+                    <!-- Filter & Search -->
+                    <div class="form-group col-md-8 col-12 no-p-l m-t-10 m-b-10 sm-no-p-r search-group">
+                        <!-- Filter-->
+                        <div dropdown [insideClick]="true" #filterDropdown="bs-dropdown" class="display-inline-block" id="dropdown-holder" (onShown)="handleFilterOpen()">
+                            <button class="btn btn-outline-violet no-m-r my-dropdown-toggle" dropdownToggle id="dropdown-filter-button"
+                                aria-controls="dropdown-filter-content" type="button" 
+                                [disabled]="rearrangeStarted" [ngClass]="{'rearrangeStarted': rearrangeStarted}" >
+                                <i class="mdi" [ngClass]="{'mdi-filter': filtered, 'mdi-filter-outline': !filtered}"></i>Filter
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-left scale-up" id="dropdown-filter-content" role="menu" *dropdownMenu aria-labelledby="dropdown-filter-button">
+                                <div class="m-b-15">
+                                    <p class="m-b-5 font-weight-400 font-14">Status</p>
+                                    <div class="form-check no-p-l">
+                                        <label class="custom-control custom-radio">
+                                            <input name="type" type="radio" class="custom-control-input" value="Active" [(ngModel)]="Filter.status" />
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Active</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input name="type" type="radio" class="custom-control-input" value="Inactive" [(ngModel)]="Filter.status" />
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Inactive</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="divider dropdown-divider m-t-15 m-b-15"></div>
+                                <div>
+                                    <button class="btn btn-default btn-sm i-rounded i-bordered" (click)="clearFilter(); filterDropdown.hide()">Reset</button>
+                                    <button class="btn btn-default btn-sm pull-right i-rounded i-violet no-m-r" (click)="filter(); filterDropdown.hide()">Filter</button>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Search -->
+                        <input type="text" id="search" name="search" #searchText class="form-control" placeholder="Search" (input)="search(searchText.value)"
+                        [disabled]="rearrangeStarted" [ngClass]="{'rearrangeStarted': rearrangeStarted}">
+                    
+                        <!-- Loading Animation -->
+                        <div [hidden]="!contentLoading" id="contentLoading">  
+                            <svg class="circular small" viewBox="25 25 50 50">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                            </svg>
+                        </div>
+                    </div>
+    
+                    <!-- Create -->
+                    <div class="text-right col-md-4 col-12 m-t-10 no-p-l sm-m-b-10 sm-no-m-t">
+                        <a [routerLink]="['/scl-admin/learning-paths',Path.id, 'subjects', Subject.id , 'topics', 'add']" ngbTooltip="Add New Topic" placement="bottom" *ngIf="!rearrangeStarted"
+                        class="btn no-m-r pull-right i-rounded i-violet font-14 cursor-pointer md-pull-left icon-only i-grey-disabled">
+                           <i class="fa fa-plus no-m-r"></i>
+                        </a>
+                        <button (click)="activateSelected()" ngbTooltip="Activate" placement="bottom" [disabled]="SelectedTopics.length == 0"
+                           class="btn m-r-5 pull-right i-rounded i-green font-14 cursor-pointer md-pull-left icon-only i-grey-disabled" *ngIf="!rearrangeStarted">
+                           <i class="fa fa-check no-m-r"></i>
+                        </button>
+                        <button (click)="deactivateSelected()" ngbTooltip="Deactivate" placement="bottom" [disabled]="SelectedTopics.length == 0"
+                           class="btn m-r-5 pull-right i-rounded i-red font-14 cursor-pointer md-pull-left icon-only i-grey-disabled" *ngIf="!rearrangeStarted">
+                           <i class="fa fa-ban no-m-r"></i>
+                        </button>
+
+                        <!-- Drag and Drop Actions-->
+                        <button (click)="saveDragSort()" ngbTooltip="Save Changes" placement="bottom" *ngIf="rearrangeStarted"
+                        class="btn no-m-r pull-right i-rounded i-violet font-14 cursor-pointer md-pull-left i-grey-disabled">
+                           <i class="fa fa-save"></i> Save
+                        </button>
+                        <button (click)="cancelDragSort()" ngbTooltip="Discard Changes" placement="bottom" *ngIf="rearrangeStarted"
+                           class="btn m-r-5 pull-right i-rounded i-red font-14 cursor-pointer md-pull-left i-grey-disabled" >
+                           <i class="fa fa-trash m-r-5"></i> Discard
+                        </button>
+                     </div>
+                </div>
+ 
+                <p class="no-m-top col-md-12 card-body-lr-p m-b-20 m-l-5" *ngIf="filtered">
+                    <span class="filterCriteria" *ngFor="let item of FilteredElements">
+                        <span class="text-capitalize">{{item.key}}</span>: <span class="font-weight-500">{{item.value}}</span>
+                        <i class="mdi mdi-close p-l-5" (click)="removeFilter(item.key, item.index)"></i>
+                    </span>
+                </p>
+ 
+                <!-- List of Topics -->
+                <div class="table-responsive col-md-12 overflow-visible no-p-lr">
+                    <table class="table shop-cart tab-table info-table table-hover has-button has-checkbox" #table>
+                        <thead>
+                            <tr>
+                                <th class="no-border-top check-box-header"></th>
+                                <th class="no-border-top check-box-header"></th>
+                                <th class="no-border-top check-box-header text-right">Index</th>
+                                <th class="text-left font-weight-500 text-small no-border-top">
+                                    Name
+                                </th>
+                                <th class="text-left font-weight-500 text-small no-border-top">
+                                    Status
+                                </th>
+                                <th class="no-border-top"></th>
+                            </tr>
+                        </thead>
+                        <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+                            <!-- First Section-->
+                            <tr cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover section-header">First Section</td>
+                            </tr>
+                            <tr *ngFor="let Topic of FirstPathSubjectTopics"  cdkDragBoundary=".table" [ngClass]="{selected: isTopicSelected(Topic.id)}"
+                            (mouseover)="Topic.showActions = true" (mouseout)="Topic.showActions = false" 
+                            cdkDrag cdkDragLockAxis="y" [cdkDragDisabled]="filtered || Searching || SelectedTopics.length > 0">
+                                <td class="topic-drag-preview" *cdkDragPreview matchSize="true" colspan="5">{{Topic.name}}</td>
+                                <td><i class="fa fa-bars" cdkDragHandle></i></td>
+                                <td>
+                                    <input type="checkbox" id=checkbox-topic-{{Topic.id}} class="filled-in chk-col-light-orange"
+                                    (change)="toggleTopic(Topic)" [checked]="isTopicSelected(Topic.id)" [ngClass]="{'rearrangeStarted': rearrangeStarted}">
+                                    <label class="no-m-b" for="checkbox-topic-{{Topic.id}}" [ngClass]="{'rearrangeStarted': rearrangeStarted}"></label>
+                                </td>
+                                <td class="text-right">#{{Topic.index}}</td>
+                                <td><a [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]">{{Topic.name}}</a></td>
+                                <td>
+                                <span class="dot" [ngClass]="{'active': Topic.isActive}"></span>
+                                <select class="font-weight-300" [(ngModel)]="Topic.isActive" (click)="$event.stopPropagation()" 
+                                    (change)="updateSingleTopic(Topic)">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                                </td>
+                                <td style="position: relative;">
+                                <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right"
+                                [ngClass]="{'opacity-0': (!Topic.showActions && !Topic.holdButtonAppearance) || rearrangeStarted}"> <!--container="body"  >-->
+                                    <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                                        ngbTooltip="Actions" placement="bottom" dropdownToggle id="dropdown-actions-button"
+                                        (click)="toggleButtonAppearance(Topic)" [ngClass]="{'hold': Topic.holdButtonAppearance}">
+                                        <!-- (click)="$event.stopPropagation()" -->
+                                        <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" 
+                                            [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]" type="button">
+                                            <i class="mdi mdi-pencil font-16"></i>Edit Topic
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin"
+                                        [routerLink]="['/scl-admin/learning-paths/', Path.id, 'subjects', Subject.id, 'topics', Topic.id, 'lessons']" type="button">
+                                            <i class="mdi mdi-eye font-16"></i>View Lessons
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="removeTopic(Topic)" type="button">
+                                            <i class="mdi mdi-close text-error font-16"></i>Remove Topic
+                                        </button>
+                                    </div>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="FirstPathSubjectTopics.length == 0 && !contentLoading" cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover no-content">No topics</td>
+                            </tr>
+
+
+                            <!-- Second Section-->
+                            <tr cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover section-header">Second Section</td>
+                            </tr>
+                            <tr *ngFor="let Topic of SecondPathSubjectTopics"  cdkDragBoundary=".table" [ngClass]="{selected: isTopicSelected(Topic.id)}"
+                            (mouseover)="Topic.showActions = true" (mouseout)="Topic.showActions = false" 
+                            cdkDrag cdkDragLockAxis="y" [cdkDragDisabled]="filtered || Searching || SelectedTopics.length > 0">
+                                <td class="topic-drag-preview" *cdkDragPreview matchSize="true" colspan="5">{{Topic.name}}</td>
+                                <td><i class="fa fa-bars" cdkDragHandle></i></td>
+                                <td>
+                                    <input type="checkbox" id=checkbox-topic-{{Topic.id}} class="filled-in chk-col-light-orange"
+                                            (change)="toggleTopic(Topic)" [checked]="isTopicSelected(Topic.id)" [ngClass]="{'rearrangeStarted': rearrangeStarted}">
+                                    <label class="no-m-b" for="checkbox-topic-{{Topic.id}}" [ngClass]="{'rearrangeStarted': rearrangeStarted}"></label>
+                                </td>
+                                <td class="text-right">#{{Topic.index}}</td>
+                                <td><a [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]">{{Topic.name}}</a></td>
+                                <td>
+                                <span class="dot" [ngClass]="{'active': Topic.isActive}"></span>
+                                <select class="font-weight-300" [(ngModel)]="Topic.isActive" (click)="$event.stopPropagation()" 
+                                    (change)="updateSingleTopic(Topic)">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                                </td>
+                                <td style="position: relative;">
+                                <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right"
+                                [ngClass]="{'opacity-0': (!Topic.showActions && !Topic.holdButtonAppearance) || rearrangeStarted}"> <!--container="body"  >-->
+                                    <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                                        ngbTooltip="Actions" placement="bottom" dropdownToggle id="dropdown-actions-button"
+                                        (click)="toggleButtonAppearance(Topic)" [ngClass]="{'hold': Topic.holdButtonAppearance}">
+                                        <!-- (click)="$event.stopPropagation()" -->
+                                        <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" 
+                                            [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]" type="button">
+                                            <i class="mdi mdi-pencil font-16"></i>Edit Topic
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin"
+                                        [routerLink]="['/scl-admin/learning-paths/', Path.id, 'subjects', Subject.id, 'topics', Topic.id, 'lessons']" type="button">
+                                            <i class="mdi mdi-eye font-16"></i>View Lessons
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="removeTopic(Topic)" type="button">
+                                            <i class="mdi mdi-close text-error font-16"></i>Remove Topic
+                                        </button>
+                                    </div>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="SecondPathSubjectTopics.length == 0 && !contentLoading" cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover no-content">No topics</td>
+                            </tr>
+
+
+                            <!-- Third Section-->
+                            <tr cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover section-header">Third Section</td>
+                            </tr>
+                            <tr *ngFor="let Topic of ThirdPathSubjectTopics"  cdkDragBoundary=".table" [ngClass]="{selected: isTopicSelected(Topic.id)}"
+                            (mouseover)="Topic.showActions = true" (mouseout)="Topic.showActions = false" 
+                            cdkDrag cdkDragLockAxis="y" [cdkDragDisabled]="filtered || Searching || SelectedTopics.length > 0">
+                                <td class="topic-drag-preview" *cdkDragPreview matchSize="true" colspan="5">{{Topic.name}}</td>
+                                <td><i class="fa fa-bars" cdkDragHandle></i></td>
+                                <td>
+                                    <input type="checkbox" id=checkbox-topic-{{Topic.id}} class="filled-in chk-col-light-orange"
+                                            (change)="toggleTopic(Topic)" [checked]="isTopicSelected(Topic.id)" [ngClass]="{'rearrangeStarted': rearrangeStarted}">
+                                    <label class="no-m-b" for="checkbox-topic-{{Topic.id}}" [ngClass]="{'rearrangeStarted': rearrangeStarted}"></label>
+                                </td>
+                                <td class="text-right">#{{Topic.index}}</td>
+                                <td><a [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]">{{Topic.name}}</a></td>
+                                <td>
+                                <span class="dot" [ngClass]="{'active': Topic.isActive}"></span>
+                                <select class="font-weight-300" [(ngModel)]="Topic.isActive" (click)="$event.stopPropagation()" 
+                                    (change)="updateSingleTopic(Topic)">
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                                </td>
+                                <td style="position: relative;">
+                                <div dropdown #actionsDropdown="bs-dropdown" class="display-inline-block" id="actions-holder" class="pull-right"
+                                [ngClass]="{'opacity-0': (!Topic.showActions && !Topic.holdButtonAppearance) || rearrangeStarted}"> <!--container="body"  >-->
+                                    <button type="button" class="btn no-m-r i-rounded i-grey-bordered i-grey-disabled font-24 cursor-pointer m-l-5 icon-only" 
+                                        ngbTooltip="Actions" placement="bottom" dropdownToggle id="dropdown-actions-button"
+                                        (click)="toggleButtonAppearance(Topic)" [ngClass]="{'hold': Topic.holdButtonAppearance}">
+                                        <!-- (click)="$event.stopPropagation()" -->
+                                        <i class="mdi mdi-dots-horizontal no-m-r"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right no-padding" id="dropdown-actions-content" role="menu" *dropdownMenu>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" 
+                                            [routerLink]="['/scl-admin/learning-paths', Path.id, 'subjects', Subject.id, 'topics', Topic.id]" type="button">
+                                            <i class="mdi mdi-pencil font-16"></i>Edit Topic
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" 
+                                            [routerLink]="['/scl-admin/learning-paths/', Path.id, 'subjects', Subject.id, 'topics', Topic.id, 'lessons']" type="button">
+                                            <i class="mdi mdi-eye font-16"></i>View Lessons
+                                        </button>
+                                        <button class="btn btn-sm i-violet-inline width-100 text-left no-margin" (click)="removeTopic(Topic)" type="button">
+                                            <i class="mdi mdi-close text-error font-16"></i>Remove Topic
+                                        </button>
+                                    </div>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="ThirdPathSubjectTopics.length == 0 && !contentLoading" cdkDrag [cdkDragDisabled]="true">
+                                <td colspan="6" class="no-hover no-content">No topics</td>
+                            </tr>
+                        </tbody>
+                    </table>
+              </div>
+            </div>
+       </div>
+    </div>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,18 @@
+<div class="myModalContainer">
+  <div class="modal-header">
+      <h4 class="modal-title pull-left" [ngClass]="{'text-uppercase font-weight-600 letter-spacing-2': Visitor}">{{Action}} {{Item}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="dismiss()">
+        <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body">
+    <p class="col-md-12 m-t-20 text-black" *ngIf="!Body" ngbAutofocus [ngClass]="{'font-15': Visitor}">Are you sure you want to {{Action | lowercase}} this selected {{Item | lowercase}}?<br />{{ExtraMessage}}</p>
+    <p class="col-md-12 m-t-20 text-black" *ngIf="Body" ngbAutofocus [ngClass]="{'font-15': Visitor}">{{Body}}?<br />{{ExtraMessage}}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn no-m-r pull-right i-rounded btn-round btn-small i-bordered font-13 cursor-pointer no-m-t no-m-b" (click)="dismiss()">Cancel</button>
+    <button type="button" [disabled]="processing" class="btn no-m-r pull-right i-rounded btn-round btn-small i-red i-bordered font-13 cursor-pointer no-m-t no-m-b m-l-5" (click)="delete()">{{Action}}
+      <span *ngIf="processing" class="loader loader-small display-inline-block no-animate"></span>
+    </button>
+  </div>
+</div>

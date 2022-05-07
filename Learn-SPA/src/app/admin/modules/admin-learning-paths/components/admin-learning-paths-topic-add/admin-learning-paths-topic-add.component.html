@@ -1,0 +1,120 @@
+<div class="myModalContainer" [ngClass]="{'has-loading': !descriptionTextAreaReady || !editLearningPathTopicReady || !LPSubjectInfoReady || !subjectReady}">
+    <div class="modal-header" [hidden]="!descriptionTextAreaReady || !editLearningPathTopicReady || !LPSubjectInfoReady || !subjectReady">
+        <h4 class="modal-title pull-left font-weight-300 font-16">{{initialState.title}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="close()" *ngIf="!processing">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+    <div class="modal-body" [hidden]="!descriptionTextAreaReady || !editLearningPathTopicReady || !LPSubjectInfoReady || !subjectReady">
+        <form #myForm="ngForm" (ngSubmit)="save()" class="form-horizontal" autocomplete="off">
+            <input autocomplete="off" name="hidden" type="text" style="display:none;">
+            <div class="col-md-12 p-t-5 p-b-5 button-region no-border-bottom">
+                <button type="submit" class="btn no-m-r pull-right i-rounded i-green i-grey-disabled font-13 cursor-pointer"
+                    [disabled]="processing || deleting || !myForm.form.valid || !hasDescription() || (editMode && !changesMade())">
+                    <i class="fa fa-save"></i>
+                    Save
+                    <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+                </button>
+            </div>
+
+            <div class="modal-body-container col-md-12 no-p-lr">
+                <div class="col-md-12">
+                    <!--<div class="form-group p-lr-15" *ngIf="editMode">
+                        <h6 class="font-12 text-muted">
+                            <i class="fa fa-info-circle text-purple m-r-5"></i>All changes made to this topic will reflect in other learning paths sharing this topic
+                        </h6>    
+                    </div>-->
+                    <div class="form-group p-lr-15">
+                        <h3 class="box-title">Name</h3>
+                        <hr class="m-t-0 m-b-10">
+                        <h6 class="font-12 text-muted" *ngIf="!editMode">
+                            <i class="fa fa-info-circle text-purple m-r-5"></i>Do you want to add existing topics in {{Subject?.name}}? <a class="text-decoration-underline cursor-pointer" (click)="loadExistingTopics()">Click Here</a>
+                        </h6>    
+                    </div>
+                    <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100" *ngIf="ExistingTopics.length == 0">
+                            <input type="text" name='name' class="form-control big-input flex-grow-100" [(ngModel)]="LearningPathTopic.topic.name"
+                            required [ngClass]="{'input-validation-error': fieldErrors.Name}" />
+                            <span *ngIf="fieldErrors.Name" class="field-validation-error white-space-pre">{{fieldErrors.Name}}</span>
+                        </div>
+                        <div class="existing-topics-holder" [hidden]="ExistingTopics.length == 0">
+                            <div class="existing-topic-item" *ngFor="let Topic of ExistingTopics; let i = index">{{Topic.name}} <i class="mdi mdi-close p-l-5" (click)="removeExistingTopic(i)"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" *ngIf="editMode">
+                    <div class="form-group p-lr-15">
+                        <h3 class="box-title">Shared Learning Paths</h3>
+                        <hr class="m-t-0 m-b-10">
+                        <h6 class="font-12 text-muted">
+                            <i class="fa fa-info-circle text-purple m-r-5"></i>All changes made to this topic will be seen in these learning paths
+                        </h6>    
+                    </div>
+                    <div class="form-group display-flex p-lr-15">
+                        <div class="flex-grow-100" *ngIf="TopicSharedLearningPaths.length == 0">
+                            <span class="text-muted">None</span>
+                        </div>
+                        <div class="shared-lp-holder" [hidden]="TopicSharedLearningPaths.length == 0">
+                            <div class="shared-lp-item" *ngFor="let LP of TopicSharedLearningPaths; let i = index">{{LP.name}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12" *ngIf="!editMode">
+                    <div class="form-group p-lr-15">
+                        <h3 class="box-title">Section</h3>
+                        <hr class="m-t-0 m-b-10">
+                        <h6 class="font-12 text-muted" *ngIf="ExistingTopics.length < 2">
+                            <i class="fa fa-info-circle text-purple m-r-5"></i>
+                            This topic will be added as the last topic of the selected section
+                        </h6>
+                        <h6 class="font-12 text-muted" *ngIf="ExistingTopics.length > 1">
+                            <i class="fa fa-info-circle text-purple m-r-5"></i>
+                            These topics will be added as the last topics of the selected section
+                        </h6>
+                    </div>
+                    <div class="form-group display-flex p-lr-15">
+                        <div class="form-check no-p-l">
+                            <label class="custom-control custom-radio">
+                                <input name="type" type="radio" class="custom-control-input" value="1" required [(ngModel)]="LearningPathTopic.section" />
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">First Section</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input name="type" type="radio" class="custom-control-input" value="2" required [(ngModel)]="LearningPathTopic.section" />
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Second Section</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input name="type" type="radio" class="custom-control-input" value="3" required [(ngModel)]="LearningPathTopic.section" />
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Third Section</span>
+                            </label>
+                        </div>
+                        <span *ngIf="fieldErrors.Section" class="field-validation-error white-space-pre">{{fieldErrors.Section}}</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="col-md-12 m-t-5">
+                    <div class="form-group p-lr-15">
+                        <h3 class="box-title" ngbAutofocus>Description</h3>
+                        <hr class="m-t-0 m-b-10">
+                    </div>
+                    <div class="form-group p-lr-15">
+                        <editor [init]="descriptionTextAreaConfig" (onInit)="descriptionReady()" name="description" [disabled]="ExistingTopics.length > 0"
+                        [(ngModel)]="LearningPathTopic.topic.description" [ngClass]="{'input-validation-error': fieldErrors.Description}"></editor>
+                        <span *ngIf="fieldErrors.Description" class="field-validation-error white-space-pre m-t-5">{{fieldErrors.Description}}</span>         
+                    </div>
+                </div>
+            </div>     
+        </form>
+    </div>
+
+    <div class="preloader position-absolute" [hidden]="descriptionTextAreaReady && editLearningPathTopicReady && LPSubjectInfoReady && subjectReady">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+        </svg>
+    </div>
+</div>

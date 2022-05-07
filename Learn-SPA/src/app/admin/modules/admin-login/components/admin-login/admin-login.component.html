@@ -1,0 +1,65 @@
+<!--<section>
+    Logo content
+</section>-->
+
+<section class="card">
+  <div class="card-body">
+    <div class="col-xl-12 m-b-20">
+        <div class="row logo text-center m-t-20">
+            <!-- Logo icon -->
+            <b class="center width-100">
+                <img src="assets/images/logo/logo_with_name.svg" alt="homepage">
+            </b>
+            <!--End Logo icon -->
+            <!-- Logo text -->
+            <!--<span class="center width-100">
+                <img src="assets/images/logo/logo-text-black-orange.png" alt="homepage">
+            </span>-->
+        </div>
+    </div>
+    <div class="col-xl-12">
+        <div class="row text-center m-t-10 sign-in">
+            <h3 class="center">SIGN IN</h3>
+            <hr class="col-xl-12">
+        </div>
+        <div class="row m-t-10">
+            <div class="col-md-12 no-p-lr">
+                <form name="formCreate" #signInForm="ngForm" (ngSubmit)="signin()" class="form-horizontal" id="signIn">
+                    <div class="form-horizontal">
+                        <div class="validation-summary-errors form-group" *ngIf="validationErrors.length > 0">
+                            <ul>
+                                <li *ngFor="let error of validationErrors">{{error}}</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="email" id="Email" name="email" class="form-control" [(ngModel)]="User.username"
+                                placeholder="Email address" [ngClass]="{'input-validation-error': fieldErrors.Username}"
+                                required>
+                            <span *ngIf="fieldErrors.Username" class="field-validation-error ng-hide"><i class="m-r-5 fa fa-exclamation-circle"></i>{{fieldErrors.Username}}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" id="Password" name="Password" class="form-control" [(ngModel)]="User.password" 
+                                placeholder="Password" [ngClass]="{'input-validation-error': fieldErrors.Password}" required>
+                            <span *ngIf="fieldErrors.Password" class="field-validation-error ng-hide"><i class="m-r-5 fa fa-exclamation-circle"></i>{{fieldErrors.Password}}</span>
+                        </div>
+
+                        <!--<div class="form-group text-right">
+                            <a class="letter-spacing-1 font-12" ui-sref="forgotpassword">Forgot Password?</a>
+                        </div>-->
+
+                        <div class="form-group text-right">
+                            <button type="submit" class="btn_violet width-100 m-t-20" style="width:100%" 
+                                [disabled]="processing || !hasAllValues()">
+                                Sign In
+                                <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>

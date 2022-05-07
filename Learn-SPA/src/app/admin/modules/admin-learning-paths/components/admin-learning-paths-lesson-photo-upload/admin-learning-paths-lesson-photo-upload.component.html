@@ -1,0 +1,47 @@
+<div class="myModalContainer" [ngClass]= "{'has-loading': !lessonReady}">
+  <div class="modal-header" [hidden]="!lessonReady">
+      <h4 class="modal-title pull-left font-weight-300 font-16">Upload Media<br/>
+        <span class="font-weight-500">{{Lesson.name}}</span>
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="close()" *ngIf="!processing">
+          <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body" [hidden]="!lessonReady">
+      <form #myForm="ngForm" (ngSubmit)="save()" class="form-horizontal" autocomplete="off">
+          <input autocomplete="off" name="hidden" type="text" style="display:none;">
+          <div class="col-md-12 p-t-5 p-b-5 button-region no-border-bottom">
+              <button type="submit" class="btn no-m-r pull-right i-rounded i-green i-grey-disabled font-13 cursor-pointer"
+                [disabled]="processing || (!editMode && Pictures.length == 0) || (editMode && !changesMade())">
+                  <!--[disabled]="deleting>-->
+                  <i class="fa fa-save"></i>
+                  {{ActionText}}
+                  <span *ngIf="processing" class="loader loader-small display-inline-block ng-hide pull-right no-animate"></span>
+              </button>
+          </div>
+
+          <div class="modal-body-container col-md-12 no-p-lr">
+            <div class="col-md-12">
+                <div class="form-group p-lr-15">
+                    <h3 class="box-title">Pictures</h3>
+                    <hr class="m-t-0 m-b-10">
+                    <h6 class="font-12 text-muted" *ngIf="!fieldErrors.Photos">Select the pictures referenced in the note and assessments</h6>
+                    <h6 class="font-12 field-validation-error" *ngIf="fieldErrors.Photos">
+                      <span *ngFor="let error of fieldErrors.Photos" class="display-block">{{error}}</span><br/>
+                    </h6>
+                    <h6 class="font-12 text-green" *ngIf="fieldErrors.Success">{{fieldErrors.Success}}</h6>
+                </div>
+                <div class="form-group p-lr-15">
+                    <app-multiple-pics [config]="pictureConfig" (picturesUpdated)="setPictures($event)" (pictureDeleted)="deletePicture($event)"></app-multiple-pics>
+                </div>
+            </div>
+          </div>
+      </form>
+  </div>
+
+  <div class="preloader position-absolute"  [hidden]="lessonReady">
+      <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+      </svg>
+  </div>
+</div>

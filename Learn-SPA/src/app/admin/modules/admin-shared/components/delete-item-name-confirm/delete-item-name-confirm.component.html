@@ -1,0 +1,31 @@
+<div class="myModalContainer">
+  <div class="modal-header">
+      <h4 class="modal-title pull-left text-error font-weight-500">Confirm Delete</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="dismiss()" *ngIf="!deleting">
+        <i class="mdi mdi-close"></i>
+      </button>
+  </div>
+  <div class="modal-body">
+    <p class="col-md-12 m-t-20 m-b-10 text-black" ngbAutofocus>
+      Enter the name of the {{Item | lowercase}} you want to {{Action | lowercase}}
+      <br />
+      <span class="font-12 text-error display-block" style="margin-top: -2px;">{{ExtraMessage}}</span>
+    </p>
+    <div class="col-md-12 m-b-5" *ngIf="HasParentName">
+      <input type="text" name='parentName' class="form-control big-input flex-grow-100" [(ngModel)]="ParentName"
+        required [ngClass]="{'input-validation-error': fieldErrors.ParentName}" placeholder="Parent {{Item}} Name" />
+      <span *ngIf="fieldErrors.ParentName" class="field-validation-error white-space-pre">{{fieldErrors.ParentName}}</span>
+    </div>
+    <div class="col-md-12 m-b-10">
+      <input type="text" name='name' class="form-control big-input flex-grow-100" [(ngModel)]="Name"
+        required [ngClass]="{'input-validation-error': fieldErrors.Name}" placeholder="{{Item}} Name" />
+      <span *ngIf="fieldErrors.Name" class="field-validation-error white-space-pre">{{fieldErrors.Name}}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn no-m-r pull-right i-rounded btn-round btn-small i-grey-bordered i-bordered font-13 cursor-pointer no-m-t no-m-b" (click)="dismiss()">Cancel</button>
+    <button type="button" class="btn no-m-r pull-right i-rounded btn-round btn-small i-red i-grey-disabled i-bordered font-13 cursor-pointer no-m-t no-m-b m-l-5" (click)="delete()" [disabled]="!nameEntered() || deleting">Confirm {{Action}}
+      <span *ngIf="deleting" class="loader loader-small display-inline-block no-animate no-m-l"></span>
+    </button>
+  </div>
+</div>
